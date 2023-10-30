@@ -1,0 +1,15 @@
+#!/bin/bash
+. config.local
+
+BASEDIR=`pwd`
+HOSTIP=`hostname  -I | cut -f 1 -d ' '`
+
+podman run -it --rm \
+    --security-opt label=disable \
+    --cap-add=SYS_ADMIN \
+    -v $BASEDIR/basedir:/mnt/koji:z \
+    -v $BASEDIR/builder:/opt/cfg:z \
+    -v $CODEDIR:/opt/koji \
+    --name koji-builder \
+    --env=HOSTIP=$HOSTIP \
+    koji /opt/cfg/entrypoint.sh

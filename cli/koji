@@ -1,0 +1,5 @@
+#!/bin/bash
+. ../config.local
+
+export PYTHONPATH=$CODEDIR:$CODEDIR/koji/cli:$CODEDIR/koji:$CODEDIR/koji/cli/koji_cli
+python3 $CODEDIR/cli/koji -c config $@

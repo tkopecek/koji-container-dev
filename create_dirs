@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# koji work directories
+BASEDIR=basedir
+mkdir $BASEDIR
+chmod 777 $BASEDIR
+# own it by container's apache
+podman unshare chown 48:48 $BASEDIR
+
+mkdir db/data

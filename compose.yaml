@@ -1,0 +1,126 @@
+version: 2
+services:
+  kojidb:
+    image: postgres:12
+    ports:
+     - "${POSTGRES_PORT:-5432}:5432"
+    hostname: kojidb
+    environment:
+      POSTGRES_USER: koji
+      POSTGRES_DB: koji
+      POSTGRES_HOST_AUTH_METHOD: password
+      POSTGRES_PASSWORD: mypassword
+      DB_SCHEMA: /opt/koji/schemas/schema.sql
+    volumes:
+     - type: bind
+       source: "${DB_DATA_DIR:-./db/data}"
+       target: /var/lib/postgresql/data
+       bind:
+        selinux: z
+     - type: bind
+       source: "${DB_INIT_DIR:-./db}"
+       target: /docker-entrypoint-initdb.d
+       bind:
+         selinux: z
+     - type: bind
+       source: "${KOJI_SRC_DIR:-../koji}"
+       target: /opt/koji
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-koji}"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+  kojihub:
+    build: .
+    ports:
+     - "8080:80"
+     - "8081:443"
+    hostname: kojihub.local
+    environment:
+      ENTRYPOINT_SKIP_CONFIG: true
+    depends_on:
+      db:
+        condition: service_healthy
+    security_opt:
+      - "label=disable"
+    uidmap:
+
+    volumes:
+      - type: bind
+        source: "${KOJI_MNT_DIR:-./basedir}"
+        target: /mnt/koji
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJI_HUB_CFG_DIR:-./hub}"
+        target: /opt/cfg
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJI_SRC_DIR:-../koji}"
+        target: /opt/koji
+      - type: bind
+        source: "${KOJI_READINESS_DIR:-./health-checks}"
+        target: /opt/koji-healthcheck
+        bind:
+          selinux: z
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/koji-healthcheck/hub-isready.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint: /opt/cfg/entrypoint.sh
+  builder:
+    build: .
+    profiles:
+      - builder
+    hostname: kojibuilder
+    environment:
+      ENTRYPOINT_SKIP_CONFIG: true
+    depends_on:
+      hub:
+        condition: service_healthy
+    security_opt:
+      - "label=disable"
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - type: bind
+        source: "${KOJI_MNT_DIR:-./basedir}"
+        target: /mnt/koji
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJI_BUILDER_CFG_DIR:-./builder}"
+        target: /opt/cfg
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJI_SRC_DIR:-../koji}"
+        target: /opt/koji
+    entrypoint: /opt/cfg/entrypoint.sh
+  kojira:
+    build: .
+    profiles:
+      - kojira
+    hostname: kojibuilder
+    environment:
+      ENTRYPOINT_SKIP_CONFIG: true
+    depends_on:
+      hub:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: "${KOJI_MNT_DIR:-./basedir}"
+        target: /mnt/koji
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJIRA_CFG_DIR:-./kojira}"
+        target: /opt/cfg
+        bind:
+          selinux: z
+      - type: bind
+        source: "${KOJI_SRC_DIR:-../koji}"
+        target: /opt/koji
+    entrypoint: /opt/cfg/entrypoint.sh

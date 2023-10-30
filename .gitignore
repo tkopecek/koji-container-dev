@@ -1,0 +1,7 @@
+basedir
+config.local
+db/data
+builder/certs/*
+certs/certs
+hub/certs/*
+kojira/certs/*

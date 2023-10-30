@@ -1,0 +1,2 @@
+Put additional certification authorities certs into this directory.
+They'll be propagated as trusted CAs into the container.

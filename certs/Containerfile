@@ -1,0 +1,31 @@
+FROM registry.fedoraproject.org/fedora:39
+
+ARG DNF_INSTALL_ARGS=--setopt=install_weak_deps=false --setopt=tsflags=nodocs --setopt=deltarpm=0
+
+ENV GEN_ROOT_CA=false
+ENV ROOT_CN="Koji CA"
+ENV FORCE=false
+ENV KOJI_USER=koji
+ENV IS_HOST=false
+
+USER root
+
+RUN dnf -y update \
+    && dnf -y ${DNF_INSTALL_ARGS} install python3-pyOpenSSL python3-dateutil openssl \
+    && dnf clean all
+
+RUN mkdir -p -m 777 /opt/certs
+
+RUN chown -fR 1001:1001 /opt
+
+WORKDIR /opt
+
+ADD --chown=1001:root https://pagure.io/koji-tools/raw/master/f/src/bin/koji-ssl-admin /bin/
+
+COPY --chown=1001:root /bin/gencerts.sh /bin/
+
+RUN chmod a+rwx /bin/koji-ssl-admin /bin/gencerts.sh
+
+USER 1001
+VOLUME ["/opt/certs"]
+CMD ["gencerts.sh"]
