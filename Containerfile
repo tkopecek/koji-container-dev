@@ -1,7 +1,5 @@
 FROM registry.fedoraproject.org/fedora:39
 
-#COPY brew.repo /etc/yum.repos.d/brew.repo
-
 RUN \
   dnf install -y --nodocs --setopt=install_weak_deps=False \
     dnf-plugins-core \
@@ -55,5 +53,3 @@ ln -s /opt/koji/plugins/hub /usr/lib/koji-hub-plugins
 # copy additional CAs if needed
 COPY ca-certs/* /etc/pki/ca-trust/source/anchors
 RUN update-ca-trust
-
-#RUN dnf -y install python3-pip gdb && pip3 install memray
