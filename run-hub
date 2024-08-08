@@ -4,8 +4,10 @@
 BASEDIR=`pwd`
 HOSTIP=`hostname  -I | cut -f 1 -d ' '`
 
+podman pod create -p 5432:5432 -p 8080:80 -p 8081:443 koji-dev
+
 podman run -d --rm --name koji-postgres \
-    -p 5432:5432 \
+    --pod=koji-dev \
     -e POSTGRES_USER=koji \
     -e POSTGRES_DB=koji \
     -e POSTGRES_HOST_AUTH_METHOD=password \
@@ -16,13 +18,11 @@ podman run -d --rm --name koji-postgres \
     -v $CODEDIR:/opt:z postgres:12 && sleep 2
 
 podman run -it --rm \
+    --pod=koji-dev \
     --security-opt label=disable \
     -v $BASEDIR/basedir:/mnt/koji:z \
     -v $BASEDIR/hub:/opt/cfg:z \
     -v $CODEDIR:/opt/koji \
-    -p 8080:80 \
-    -p 8081:443 \
-    -h localhost.localdomain \
     --name koji-hub \
     --env=HOSTIP=$HOSTIP \
     koji \

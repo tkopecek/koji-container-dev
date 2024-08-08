@@ -5,6 +5,7 @@ BASEDIR=`pwd`
 HOSTIP=`hostname  -I | cut -f 1 -d ' '`
 
 podman run -it --rm \
+    --pod koji-dev \
     --security-opt label=disable \
     --cap-add=SYS_ADMIN \
     -v $BASEDIR/basedir:/mnt/koji:z \
