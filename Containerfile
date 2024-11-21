@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:40
+FROM registry.fedoraproject.org/fedora:41
 
 RUN \
   dnf install -y --nodocs --setopt=install_weak_deps=False \
@@ -44,9 +44,9 @@ mkdir /usr/share/koji-web ;\
 ln -s /opt/koji/www/kojiweb /usr/share/koji-web/scripts ;\
 ln -s /opt/koji/www/lib /usr/share/koji-web/lib ;\
 ln -s /opt/koji/www/static /usr/share/koji-web/static ;\
-ln -s /opt/koji/koji /usr/lib/python3.12/site-packages/koji ;\
-ln -s /opt/koji/cli/koji_cli /usr/lib/python3.12/site-packages/koji_cli ;\
-ln -s /opt/koji/kojihub /usr/lib/python3.12/site-packages/kojihub ;\
+ln -s /opt/koji/koji /usr/lib/python3.13/site-packages/koji ;\
+ln -s /opt/koji/cli/koji_cli /usr/lib/python3.13/site-packages/koji_cli ;\
+ln -s /opt/koji/kojihub /usr/lib/python3.13/site-packages/kojihub ;\
 ln -s /opt/koji/kojihub/app /usr/share/koji-hub ;\
 ln -s /opt/koji/plugins/hub /usr/lib/koji-hub-plugins
 
