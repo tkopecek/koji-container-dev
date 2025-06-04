@@ -2,9 +2,22 @@
 
 # koji work directories
 BASEDIR=basedir
+OS_NAME=$(uname -s) # Get the operating system name
+
 mkdir $BASEDIR
 chmod 777 $BASEDIR
+
+echo "Detected OS: $OS_NAME"
+
 # own it by container's apache
-podman unshare chown 48:48 $BASEDIR
+if [ "$OS_NAME" = "Linux" ]; then
+    echo "Running podman unshare directly on Linux host..."
+    podman unshare chown 48:48 $BASEDIR
+elif [ "$OS_NAME" = "Darwin" ]; then
+    echo "Running podman unshare inside Podman machine (macOS host)..."
+    podman machine ssh "podman unshare chown 48:48 $(pwd)/$BASEDIR"
+else
+    echo "Unsupported OS for this operation: $OS_NAME"
+fi
 
 mkdir db/data
