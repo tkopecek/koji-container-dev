@@ -35,7 +35,16 @@ gen-certs:
 	${CONTAINER_CMD} run --rm -v $(CERTS_DIR_LOCAL):/opt/certs:z \
 	           -e KOJI_USER="kojiadmin" \
 	           -it ${IMAGE_NAME}
+ifeq ($(shell uname -s),Linux)
+	@echo "Detected Linux OS. Running podman unshare directly."
 	${CONTAINER_CMD} unshare chmod -fR a+rw $(CERTS_DIR_LOCAL)
+else ifeq ($(shell uname -s),Darwin)
+	@echo "Detected macOS OS. Running podman unshare inside Podman machine."
+	${CONTAINER_CMD} machine ssh "${CONTAINER_CMD} unshare chmod -fR a+rw $(CERTS_DIR_LOCAL)"
+else
+	@echo "Unsupported OS: $(shell uname -s). Cannot run podman unshare."
+	@exit 1
+endif
 	mkdir -p ../hub/certs
 	rm -f ../hub/certs/*
 	ln $(CERTS_DIR_LOCAL)/root-ca/koji-ca.crt ../hub/certs/koji-ca.crt
