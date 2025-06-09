@@ -12,10 +12,10 @@ echo "Detected OS: $OS_NAME"
 # own it by container's apache
 if [ "$OS_NAME" = "Linux" ]; then
     echo "Running podman unshare directly on Linux host..."
-    podman unshare chown 48:48 $BASEDIR
+    podman unshare chown apache:apache $BASEDIR
 elif [ "$OS_NAME" = "Darwin" ]; then
     echo "Running podman unshare inside Podman machine (macOS host)..."
-    podman machine ssh "podman unshare chown 48:48 $(pwd)/$BASEDIR"
+    podman machine ssh "podman unshare chown apache:apache $(pwd)/$BASEDIR"
 else
     echo "Unsupported OS for this operation: $OS_NAME"
 fi
