@@ -22,7 +22,7 @@ Basically, podman and make are needed. Optionally, podman-compose could be also 
 The Apache HTTP Server is also needed, which if necessary, can be installed with:
 
 ```bash
-$ sudo dnf install httpd -y
+sudo dnf install httpd -y
 ```
 
 ## Installing the Needed Code
@@ -36,14 +36,14 @@ The below examples expect the shell environment variable `MY_WORKING_DIR` to be 
 to path of your working directory.
 
 ```bash
-$ export MY_WORKING_DIR="${HOME}/my_working_directory"
+export MY_WORKING_DIR="${HOME}/my_working_directory"
 ```
 **Clone the needed code:**
 
 ```bash
-$ cd ${MY_WORKING_DIR}
-$ git clone git@github.com:tkopecek/koji-container-dev.git
-$ git clone https://pagure.io/koji.git
+cd ${MY_WORKING_DIR}
+git clone git@github.com:tkopecek/koji-container-dev.git
+git clone https://pagure.io/koji.git
 ```
 
 ## Building
@@ -56,8 +56,8 @@ $ git clone https://pagure.io/koji.git
   Use the `koji-container-dev/build` bash script, which just runs `podman build` for one-fit-for-all base image)
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev
-$ ./build
+cd ${MY_WORKING_DIR}/koji-container-dev
+./build
 ```
 
 * Populate the `basedir` directory, for hub directories, and the `db/data`, for DB.
@@ -65,8 +65,8 @@ $ ./build
   Use the `koji-container-dev/create_dirs` bash script to create the needed directories.
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev
-$ ./create_dirs
+cd ${MY_WORKING_DIR}/koji-container-dev
+./create_dirs
 ```
 
 * Create your own config file and update `CODEDIR`
@@ -74,15 +74,15 @@ $ ./create_dirs
 Set the CODEDIR to match where you cloned the koji repository.
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev
-$ cp config config.local
-$ sed -i "s|your-path-to-directory|${MY_WORKING_DIR}/koji|g" config.local
+cd ${MY_WORKING_DIR}/koji-container-dev
+cp config config.local
+sed -i "s|your-path-to-directory|${MY_WORKING_DIR}/koji|g" config.local
 ```
 * Create the ssl certificates for hub/web, builder and admin accounts.
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev/certs
-$ make build gen-certs
+cd ${MY_WORKING_DIR}/koji-container-dev/certs
+make build gen-certs
 ```
 
 ## Using
@@ -97,8 +97,8 @@ $ make build gen-certs
   to this terminal.
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev
-$ ./run-hub
+cd ${MY_WORKING_DIR}/koji-container-dev
+./run-hub
 ```
 
 * If you need to spawn also the builder, run `./run-builder`
@@ -112,8 +112,8 @@ $ ./run-hub
   testing things are set up properly run `./koji hello`.
 
 ```bash
-$ cd ${MY_WORKING_DIR}/koji-container-dev/cli
-$ ./koji hello
+cd ${MY_WORKING_DIR}/koji-container-dev/cli
+./koji hello
     yo, kojiadmin!
 
     You are using the hub at https://localhost:8081/kojihub (Koji 1.35.3)
