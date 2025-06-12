@@ -87,7 +87,7 @@ $ make build gen-certs
 
 ## Using
 
-* Spawn postgres container `koji-postgres` and hub `koji-hub`.
+* Spawn koji-dev pod which contains koji-postgres and koji-hub contianers
 
   Use the `koji-container-dev/run-hub` bash script to create the needed podman containers.
 
