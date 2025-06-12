@@ -30,8 +30,18 @@ $ sudo dnf install httpd -y
 This repositry uses the code in the Koji repository found here: https://pagure.io/koji. In order
 to use this **Koji Container Development Tool** two GitHub repositories need to be obtained.
 
+**Create MY_WORKING_DIR environment variable:**
+
+The below examples expect the shell environment variable `MY_WORKING_DIR` to be set
+to path of your working directory.
+
 ```bash
-$ cd <my github directory>
+$ export MY_WORKING_DIR="${HOME}/my_working_directory"
+```
+**Clone the needed code:**
+
+```bash
+$ cd ${MY_WORKING_DIR}
 $ git clone git@github.com:tkopecek/koji-container-dev.git
 $ git clone https://pagure.io/koji.git
 ```
@@ -46,7 +56,7 @@ $ git clone https://pagure.io/koji.git
   Use the `koji-container-dev/build` bash script, which just runs `podman build` for one-fit-for-all base image)
 
 ```bash
-$ cd <my github directory>/koji-container-dev
+$ cd ${MY_WORKING_DIR}/koji-container-dev
 $ ./build
 ```
 
@@ -55,7 +65,7 @@ $ ./build
   Use the `koji-container-dev/create_dirs` bash script to create the needed directories.
 
 ```bash
-$ cd <my github directory>/koji-container-dev
+$ cd ${MY_WORKING_DIR}/koji-container-dev
 $ ./create_dirs
 ```
 
@@ -64,14 +74,14 @@ $ ./create_dirs
 Set the CODEDIR to match where you cloned the koji repository.
 
 ```bash
-$ cd <my github directory>/koji-container-dev
+$ cd ${MY_WORKING_DIR}/koji-container-dev
 $ cp config config.local
-$ sed -i 's/your-path-to-directory/"<my github directory>\/koji"/g' config.local
+$ sed -i "s|your-path-to-directory|${MY_WORKING_DIR}/koji|g" config.local
 ```
 * Create the ssl certificates for hub/web, builder and admin accounts.
 
 ```bash
-$ cd <my github directory>/koji-container-dev/certs
+$ cd ${MY_WORKING_DIR}/koji-container-dev/certs
 $ make build gen-certs
 ```
 
@@ -87,7 +97,7 @@ $ make build gen-certs
   to this terminal.
 
 ```bash
-$ cd <my github directory>/koji-container-dev
+$ cd ${MY_WORKING_DIR}/koji-container-dev
 $ ./run-hub
 ```
 
@@ -102,7 +112,7 @@ $ ./run-hub
   testing things are set up properly run `./koji hello`.
 
 ```bash
-$ cd <my github directory>/koji-container-dev/cli
+$ cd ${MY_WORKING_DIR}/koji-container-dev/cli
 $ ./koji hello
     yo, kojiadmin!
 
@@ -123,6 +133,6 @@ If you are using a recent version of Docker/Podman, you may be interested in usi
 the Docker Compose v2 compatible definition in `compose.yaml`
 
 * run steps from the Building section.
-* run `export KOJI_SRC_DIR=<my github directory>/koji
+* run `export KOJI_SRC_DIR=${MY_WORKING_DIR}/koji
 * run `podman-compose up` to start a database, hub, builder and kojira containers
 
