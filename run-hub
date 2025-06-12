@@ -1,12 +1,37 @@
 #!/bin/bash
+
 . config.local
+
+USE_CONSOLE="-it"
+REPLACE=""
+while getopts dhr option ; do
+    case "${option}" in
+        h)
+            echo "Usage: run-hub [-h] [-d]"
+            echo " -h: prints this help"
+            echo " -d: detaches from the console"
+            echo " -r: replaces running containers (koji-postgres, koji-hub)"
+            exit 2
+            ;;
+        d)
+            USE_CONSOLE="-d"
+            ;;
+        r)  
+            REPLACE="--replace"
+            ;;
+        *)
+            echo "Unknown option"
+            exit 1
+            ;;
+    esac
+done
 
 BASEDIR=`pwd`
 HOSTIP=`hostname  -I | cut -f 1 -d ' '`
 
-podman pod create -p 5432:5432 -p 8080:80 -p 8081:443 koji-dev
+podman pod create $REPLACE -p 5432:5432 -p 8080:80 -p 8081:443 koji-dev
 
-podman run -d --rm --name koji-postgres \
+podman run -d --rm --name koji-postgres $REPLACE \
     --pod=koji-dev \
     -e POSTGRES_USER=koji \
     -e POSTGRES_DB=koji \
@@ -17,7 +42,7 @@ podman run -d --rm --name koji-postgres \
     -v $BASEDIR/db:/docker-entrypoint-initdb.d:z \
     -v $CODEDIR:/opt:z postgres:17 && sleep 2
 
-podman run -it --rm \
+podman run $USE_CONSOLE --rm $REPLACE \
     --pod=koji-dev \
     --security-opt label=disable \
     -v $BASEDIR/basedir:/mnt/koji:z \
