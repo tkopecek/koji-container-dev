@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora:39
+FROM registry.fedoraproject.org/fedora:42
 
 ARG DNF_INSTALL_ARGS=--setopt=install_weak_deps=false --setopt=tsflags=nodocs --setopt=deltarpm=0
 

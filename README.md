@@ -22,7 +22,7 @@ Basically, podman and make are needed. Optionally, podman-compose could be also 
 The Apache HTTP Server is also needed, which if necessary, can be installed with:
 
 ```bash
-sudo dnf install httpd -y
+sudo dnf install -y git podman make
 ```
 
 ## Installing the Needed Code
@@ -42,7 +42,7 @@ export MY_WORKING_DIR="${HOME}/my_working_directory"
 
 ```bash
 cd ${MY_WORKING_DIR}
-git clone git@github.com:tkopecek/koji-container-dev.git
+git clone https://github.com/tkopecek/koji-container-dev.git
 git clone https://pagure.io/koji.git
 ```
 

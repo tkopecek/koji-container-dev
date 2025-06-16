@@ -15,7 +15,8 @@ podman run -d --rm --name koji-postgres \
     -e DB_SCHEMA=/opt/schemas/schema.sql \
     -v $BASEDIR/db/data:/var/lib/postgresql/data:z \
     -v $BASEDIR/db:/docker-entrypoint-initdb.d:z \
-    -v $CODEDIR:/opt:z postgres:17 && sleep 2
+    -v $CODEDIR:/opt:z \
+    docker.io/library/postgres:17 && sleep 2
 
 podman run -it --rm \
     --pod=koji-dev \
