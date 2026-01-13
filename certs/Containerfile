@@ -20,7 +20,7 @@ RUN chown -fR 1001:1001 /opt
 
 WORKDIR /opt
 
-ADD --chown=1001:root https://pagure.io/koji-tools/raw/master/f/src/bin/koji-ssl-admin /bin/
+COPY --chown=1001:root /bin/koji-ssl-admin /bin/
 
 COPY --chown=1001:root /bin/gencerts.sh /bin/
 
